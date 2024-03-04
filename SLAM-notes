@@ -23,6 +23,16 @@
 3. The lower the inflation_radius, the easier it is to compute the path, but you have a higher chance of bumping.
 4/ The controller_server can be used to change the max velocity, acceleration, update rate etc.  
 
+#Recovery Behavior
+1. When the plannar fails to generate a path, or the robot is unable to follow the path, then the recovery behavior is called.
+2. It is usually a predefined motion. Like rotate a bit or move a bit etc.
+3. The behavior server is called when there is an issue with the Global or the Local Plannar.
+
+#TFs
+1. To check the TF tree : ros2 run tf2_tools view_frames. It will generate a nice pdf.
+2. map >> odom >> base_footprint.
+3. map keeps track of the robot position for long time. e.g GPS or LIDAR
+4. odom usually comes from IMU sensor or rotation of wheel etc.
 
 #Load turtlebot3 in gazebo 
 ros2 launch turtlebot3_gazebo turtlebot3_world.launch.py
@@ -36,3 +46,4 @@ ros2 run nav2_map_server map_saver_cli -f maps/my_map
 #Now, do the navigation
 ros2 launch turtlebot3_gazebo turtlebot3_world.launch.py
 ros2 launch turtlebot3_navigation2 navigation2.launch.py use_sim_time:=True map:=maps/my_map.yaml
+
