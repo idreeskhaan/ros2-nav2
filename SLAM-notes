@@ -1,0 +1,38 @@
+
+
+#Topics covered
+1. Opening up worlds and robots in Gazebo.
+2. Generating Map using Cartographer by moving the robot manually using the teleop node. You can also publish to the /cmd_vel topic to move it.
+3. Saving maps using nav2_map_server.
+4. Analyzing what is inside the maps. e.g. resolution, origin, mode, free_thresh, occupied_thresh, map file.
+5. Making the robot navigate using turtlebot3_navigation2 package.
+6. Creating 2D Pose estimate to correct the starting point of the robot in the map.
+7. Putting navigation goals to move in the map.
+8. Navigate the robot using way point follower. The continuous way point follower is not very robust.
+
+#More on Nav2
+1. We have a Global Plannar and a Local Planner (Controller).
+2. The Global Plannar computes the CostMap based on the entire map and the navigation goal. It also updates it slowly. Usually 1Hz or 2Hz. It will try to find the path with the least possible cumulative cost.
+3. The CostMap is simply the cost for each pixel. The lower the cost, the better that pixel is. Obstacles always have the highest cost since you cannot bump into them.
+4. The red pixels have high cost and the blue pixels have low cost. The wight pixels have the lowest cost. 
+5. The Controller plans locally and generates its own CostMap. It controlls the actual movement of the robot.
+
+#Nav2 Parameters
+1. To change parameters, open rqt.
+2. For the global planner, reducing the inflation_radius lowers the cost around the obstacles. Adjust it to change the clearance around obstacles. The same method applies to Local Planner as well.
+3. The lower the inflation_radius, the easier it is to compute the path, but you have a higher chance of bumping.
+4/ The controller_server can be used to change the max velocity, acceleration, update rate etc.  
+
+
+#Load turtlebot3 in gazebo 
+ros2 launch turtlebot3_gazebo turtlebot3_world.launch.py
+
+#Start the cartographer to generate the map
+ros2 launch turtlebot3_cartographer cartographer.launch.py use_sim_time:=True
+
+#save the map
+ros2 run nav2_map_server map_saver_cli -f maps/my_map
+
+#Now, do the navigation
+ros2 launch turtlebot3_gazebo turtlebot3_world.launch.py
+ros2 launch turtlebot3_navigation2 navigation2.launch.py use_sim_time:=True map:=maps/my_map.yaml
